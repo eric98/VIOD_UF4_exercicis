@@ -36,3 +36,15 @@ CREATE TABLE videojocs (
 
 -- > Comprovació: Descripció de la taula videojocs
 \d videojocs;
+
+-- c) Insereix les següents dades.
+INSERT INTO desenvolupadors (id, nom) VALUES
+(1, 'Team Cherry'), (2, 'Konami'), (3, 'Valve');
+INSERT INTO videojocs VALUES
+(1, 'Hollow Knight', '2017-02-24', 'METROIDVANIA', 14.99, NULL, 1),
+(2, 'Silent Hill 2', '2001-09-24', 'SURVIVAL', 49.99, NULL, 2),
+(3, 'Portal', '2007-10-10', 'ACTION ADVENTURE', 19.99, NULL, 3);
+
+-- > Comprovació: Consultem el contingut de les taules
+SELECT * FROM desenvolupadors;
+SELECT * FROM videojocs;
