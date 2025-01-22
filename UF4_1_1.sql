@@ -9,7 +9,7 @@ CREATE DATABASE biblioteca;
 
 -- a) Creació de taula desenvolupadors
 CREATE TABLE desenvolupadors (
-        id INT CHECK (id >= 0),
+        id INT CHECK (id >= 0), -- Afegim un CHECK per a simular el UNSIGNED (valor major o igual a 0)
         nom VARCHAR(20),
         PRIMARY KEY (id)
 );
@@ -19,9 +19,10 @@ CREATE TABLE desenvolupadors (
 
 -- b) Creació de taula videojocs
 CREATE TABLE videojocs (
-        id INT CHECK (id >= 0),
+        id INT CHECK (id >= 0), -- Afegim un CHECK per a simular el UNSIGNED (valor major o igual a 0)
         nom VARCHAR(45),
         data_sortida DATE,
+        -- Afegim un CHECK per a simular ENUM dels valors ('SURVIVAL', 'RPG', 'METROIDVANIA', 'ACTION ADVENTURE')
         genere VARCHAR CHECK (genere IN ('SURVIVAL', 'RPG', 'METROIDVANIA', 'ACTION ADVENTURE')),
         preu NUMERIC(6,2),
         img_portada BYTEA,
