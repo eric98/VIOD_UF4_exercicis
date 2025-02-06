@@ -135,7 +135,7 @@ void updateRubikOption(pqxx::connection &conn) {
 
   // 1. Mostrem els cubs de rubiks existents (SELECT)
   // 2. Preguntem per l'id del cub de rubik que es vol modificar
-  // 3. Creem un cub de rubik amb les noves dades
+  // 3. Creem un cub de rubik amb les noves dades però amb el mateix id
   // 4. Executem la funció updateRubik()
 }
 
@@ -145,7 +145,7 @@ void deleteRubikOption(pqxx::connection &conn) {
 
   // 1. Mostrem els cubs de rubiks existents (SELECT)
   // 2. Preguntem per l'id del cub de rubik que es vol esborrar
-  // 3. Executem la funció updateRubik()
+  // 3. Executem la funció deleteRubik()
 }
 
 int main(int argc, char * argv[]) {
