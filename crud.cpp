@@ -39,19 +39,55 @@ std::string rubikToString(rubik r) {
   return "{id=" + std::to_string(r.id) + ", nom=" + r.nom + ", pegatines=" + (r.pegatines ? 'y' : 'n') + ", tipus=" + getStringEnumFromRubikType(r.tipus) + " }";
 }
 
-void insertRubik(rubik r, pqxx::connection & conn) {
-  std::cout << "\n... executant consulta preparada ..." << std::endl;
-
+// ORM #1 'C'RUD, create
+void createRubiksCube(pqxx::connection &conn, std::string nom, bool pegatines, rubik::type tipus) {
   /* Create a transactional object. */
   pqxx::work w(conn);
 
   /* Execute SQL query */
-  w.exec_prepared("insert", r.nom, r.pegatines ? "TRUE" : "FALSE", getStringEnumFromRubikType(r.tipus));
+  w.exec_prepared("insert", nom, pegatines ? "TRUE" : "FALSE", getStringEnumFromRubikType(tipus));
   w.commit();
-  std::cout << "--> Operació INSERT executada exitosament" << std::endl;
 }
 
-void insertRubikOption(pqxx::connection & conn) {
+// ORM #2 C'R'UD, read
+void readRubiksCubes(pqxx::connection &conn) {
+  /* Create a non-transactional object. */
+  pqxx::nontransaction n(conn);
+
+  /* Execute SQL query */
+  pqxx::result r(n.exec_prepared("select"));
+
+  /* List down all the records */
+  for (pqxx::result::const_iterator c = r.begin(); c != r.end(); ++c) {
+
+    rubik rubikAux;
+    rubikAux.id = c[0].as <int> ();
+    rubikAux.nom = c[1].as <std::string> ();
+    rubikAux.pegatines = c[2].as <bool> ();
+    rubikAux.tipus = getRubikTypeFromString(c[3].as <std::string> ());
+
+    std::cout << rubikToString(rubikAux) << std::endl;
+  }
+}
+
+// ORM #3 CR'U'D, update
+void updateRubiksCubeById(pqxx::connection &conn, int id, std::string nom, bool pegatines, rubik::type tipus) {
+  /* Create a transactional object. */
+  pqxx::work w(conn);
+
+  /* Execute SQL query */
+  w.exec_prepared("update", id, nom, pegatines ? "TRUE" : "FALSE", getStringEnumFromRubikType(tipus));
+  w.commit();
+}
+
+// ORM #4 CRU'D', delete
+void deleteRubiksCubeById() {
+  // TODO
+}
+
+
+// Menu functions #1
+void insertRubikOption(pqxx::connection &conn) {
 
   // 1. Mostrem el formulari de creació d'un nou cub de rubik
   std::cout << "== Menú de creació de cub de rubik ==" << std::endl;
@@ -79,52 +115,22 @@ void insertRubikOption(pqxx::connection & conn) {
   if (confirm == 'y') {
 
     // 3. Creem el cub de rubik amb les dades rebudes del formulari
-    rubik rubikToInsert;
-    rubikToInsert.nom = nomAux;
-    rubikToInsert.pegatines = pegatinesAux;
-    rubikToInsert.tipus = tipusAux;
-
-    insertRubik(rubikToInsert, conn);
-
+    std::cout << "\n... executant consulta preparada ..." << std::endl;
+    createRubiksCube(conn,nomAux,pegatinesAux,tipusAux);
+    std::cout << "--> Operació INSERT executada exitosament" << std::endl;
+    
   }
 }
 
-void selectRubikOption(pqxx::connection & conn) {
+// Menu functions #2
+void selectRubikOption(pqxx::connection &conn) {
   std::cout << "... executant consulta preparada ..." << std::endl;
-
-  /* Create a non-transactional object. */
-  pqxx::nontransaction n(conn);
-
-  /* Execute SQL query */
-  pqxx::result r(n.exec_prepared("select"));
-
-  /* List down all the records */
-  for (pqxx::result::const_iterator c = r.begin(); c != r.end(); ++c) {
-
-    rubik rubikAux;
-    rubikAux.id = c[0].as < int > ();
-    rubikAux.nom = c[1].as < std::string > ();
-    rubikAux.pegatines = c[2].as < bool > ();
-    rubikAux.tipus = getRubikTypeFromString(c[3].as < std::string > ());
-
-    std::cout << rubikToString(rubikAux) << std::endl;
-  }
+  readRubiksCubes(conn);
   std::cout << "--> Operació SELECT executada exitosament" << std::endl;
 }
 
-void updateRubik(rubik r, pqxx::connection & conn) {
-  std::cout << "\n... executant consulta preparada ..." << std::endl;
-
-  /* Create a transactional object. */
-  pqxx::work w(conn);
-
-  /* Execute SQL query */
-  w.exec_prepared("update", r.id, r.nom, r.pegatines ? "TRUE" : "FALSE", getStringEnumFromRubikType(r.tipus));
-  w.commit();
-  std::cout << "--> Operació UPDATE executada exitosament" << std::endl;
-}
-
-void updateRubikOption(pqxx::connection & conn) {
+// Menu functions #3
+void updateRubikOption(pqxx::connection &conn) {
   // TODO
 
   // 1. Mostrem els cubs de rubiks existents (SELECT)
@@ -133,7 +139,8 @@ void updateRubikOption(pqxx::connection & conn) {
   // 4. Executem la funció updateRubik()
 }
 
-void deleteRubikOption(pqxx::connection & conn) {
+// Menu functions #4
+void deleteRubikOption(pqxx::connection &conn) {
   // TODO
 
   // 1. Mostrem els cubs de rubiks existents (SELECT)
