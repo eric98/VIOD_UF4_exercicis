@@ -88,15 +88,13 @@ void insertRubikOption(pqxx::connection &conn) {
 }
 
 void selectRubikOption(pqxx::connection &conn) {
-  std::cout << "... executant consulta preparada ..." << std::endl;
-    /* Create SQL statement */
-      std::string sql("SELECT * from rubiks ORDER BY id");
+      std::cout << "... executant consulta preparada ..." << std::endl;
 
       /* Create a non-transactional object. */
       pqxx::nontransaction n(conn);
 
       /* Execute SQL query */
-      pqxx::result r( n.exec( sql ));
+      pqxx::result r( n.exec_prepared("select"));
 
       /* List down all the records */
       for (pqxx::result::const_iterator c = r.begin(); c != r.end(); ++c) {
@@ -153,6 +151,7 @@ int main(int argc, char* argv[]) {
          return 1;
       }
       
+      conn.prepare("select","SELECT * from rubiks ORDER BY id");
       conn.prepare("insert","INSERT INTO rubiks (nom, pegatines, tipus) VALUES ($1,$2,$3);");
       conn.prepare("update","UPDATE rubiks SET nom=$2, pegatines=$3, tipus=$4 WHERE id=$1;");
       // TODO: prepare delete
