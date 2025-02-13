@@ -5,7 +5,7 @@
 #include "menu_options.hpp"
 
 // Versió del fitxer crud.cpp distribuit entre diversos fitxers.
-// 	Podem compilar-ho amb la següent comanda (imp. afegir el paràmetre -lpqxx)
+// 	Podem compilar-ho amb la següent comanda (important afegir el paràmetre -lpqxx)
 // 	$ g++ -o main main.cpp menu_options.cpp orm.cpp rubik.cpp -lpqxx
 
 // Fitxer principal. Conté el menú de l'aplicació
